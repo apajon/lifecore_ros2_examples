@@ -1,0 +1,73 @@
+[project]
+name = "lifecore_ros2_examples"
+version = "0.0.0"
+description = "Applied examples for lifecore_ros2 lifecycle component patterns."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+  { name = "Adrien Pajon", email = "7260230+apajon@users.noreply.github.com" }
+]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dependencies = [
+  "lifecore_ros2",
+]
+
+[project.urls]
+Source = "https://github.com/apajon/lifecore_ros2_examples"
+Core = "https://github.com/apajon/lifecore_ros2"
+
+[dependency-groups]
+dev = [
+  "pre-commit>=4.0",
+  "pyright>=1.1.408",
+  "pytest>=8.0",
+  "ruff>=0.11.8",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+lifecore_ros2 = { path = "../lifecore_ros2", editable = true }
+
+[tool.ruff]
+line-length = 119
+target-version = "py312"
+exclude = [
+  "build",
+  "dist",
+  "install",
+  "log",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E203", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.pyright]
+include = ["examples", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+reportMissingTypeStubs = "warning"
+reportUnknownMemberType = "warning"
+reportUnknownArgumentType = "warning"
+reportUnknownVariableType = "warning"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "-p", "no:launch_testing",
+  "-p", "no:launch_pytest",
+  "-p", "no:launch_ros",
+  "-p", "no:ament_copyright",
+  "-p", "no:ament_flake8",
+  "-p", "no:ament_lint",
+  "-p", "no:ament_pep257",
+  "-p", "no:ament_xmllint",
+]
