@@ -35,6 +35,10 @@ jobs:
       working-directory: lifecore_ros2_examples
       run: uv run ruff check .
 
+    - name: Ruff format
+      working-directory: lifecore_ros2_examples
+      run: uv run ruff format --check .
+
     - name: Pyright
       working-directory: lifecore_ros2_examples
       run: uv run pyright

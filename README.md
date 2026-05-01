@@ -10,6 +10,8 @@ Examples belong here when they use applied ROS 2 patterns such as sensor pipelin
 
 This repository intentionally does not promise backward compatibility for example internals. Treat the examples as followable scaffolding, not a library surface.
 
+Some future examples may take conceptual inspiration from MIT's [Underactuated Robotics](https://underactuated.mit.edu/) materials when choosing robotics dynamics, estimation, control, or systems scenarios. That source is used as design inspiration only; this repository does not vendor, mirror, or reproduce its content.
+
 ## Requirements
 
 - Python 3.12+
@@ -39,6 +41,7 @@ Run the local quality gates with:
 
 ```bash
 uv run ruff check .
+uv run ruff format --check .
 uv run pyright
 uv run pytest
 ```
