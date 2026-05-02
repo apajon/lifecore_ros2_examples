@@ -12,37 +12,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout examples repository
-      uses: actions/checkout@v4
-      with:
-        path: lifecore_ros2_examples
+      - name: Checkout examples repository
+        uses: actions/checkout@v4
+        with:
+          path: lifecore_ros2_examples
 
-    - name: Checkout lifecore_ros2
-      uses: actions/checkout@v4
-      with:
-        repository: apajon/lifecore_ros2
-        path: lifecore_ros2
+      - name: Checkout lifecore_ros2
+        uses: actions/checkout@v4
+        with:
+          repository: apajon/lifecore_ros2
+          path: lifecore_ros2
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Set up uv
-      uses: astral-sh/setup-uv@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
 
-    - name: Ruff
-      working-directory: lifecore_ros2_examples
-      run: uv run ruff check .
+      - name: Ruff
+        working-directory: lifecore_ros2_examples
+        run: uv run ruff check .
 
-    - name: Ruff format
-      working-directory: lifecore_ros2_examples
-      run: uv run ruff format --check .
+      - name: Ruff format
+        working-directory: lifecore_ros2_examples
+        run: uv run ruff format --check .
 
-    - name: Pyright
-      working-directory: lifecore_ros2_examples
-      run: uv run pyright
+      - name: Pyright
+        working-directory: lifecore_ros2_examples
+        run: uv run pyright
 
-    - name: Pytest
-      working-directory: lifecore_ros2_examples
-      run: uv run pytest
+      - name: Pytest
+        working-directory: lifecore_ros2_examples
+        run: uv run pytest
