@@ -58,6 +58,7 @@ reportUnknownVariableType = "warning"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = [
   "-p", "no:launch_testing",
   "-p", "no:launch_pytest",

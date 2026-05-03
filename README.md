@@ -57,6 +57,10 @@ examples/       Applied lifecycle examples
 tests/          Smoke tests for examples and repository structure
 ```
 
-## First Planned Example
+## Available Examples
 
-The first applied scenario is planned as a sensor-fusion pipeline. It will demonstrate multiple simulated inputs, a lifecycle-aware fusion component, explicit warm-up behavior, and state reset on deactivate.
+- [`examples/lifecycle_comparison/`](examples/lifecycle_comparison/) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario.
+
+## Planned Examples
+
+- Sensor-fusion pipeline with multiple simulated inputs, a lifecycle-aware fusion component, explicit warm-up behavior, and state reset on deactivate.
