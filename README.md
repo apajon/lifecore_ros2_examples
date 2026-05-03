@@ -17,22 +17,24 @@ Some future examples may take conceptual inspiration from MIT's [Underactuated R
 - Python 3.12+
 - ROS 2 Jazzy available from the system installation
 - `uv` for local commands
-- A sibling checkout of `lifecore_ros2` at `../lifecore_ros2`
 
 `rclpy` is intentionally not declared as a PyPI dependency. It is provided by the ROS 2 installation.
+`lifecore_ros2` is resolved from the published PyPI package by default.
 
 ## Local Setup
 
 From this repository:
 
 ```bash
+source /opt/ros/jazzy/setup.bash
 uv sync --dev
 ```
 
-The local `lifecore_ros2` dependency is resolved from the sibling checkout:
+To test examples against an unreleased local checkout of the core repository,
+temporarily override the dependency with an editable path:
 
-```text
-../lifecore_ros2
+```bash
+uv add --editable ../lifecore_ros2
 ```
 
 ## Validation

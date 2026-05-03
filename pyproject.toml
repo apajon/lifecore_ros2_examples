@@ -10,7 +10,7 @@ authors = [
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 dependencies = [
-  "lifecore_ros2",
+  "lifecore-ros2>=0.6.1,<1.0.0",
 ]
 
 [project.urls]
@@ -27,9 +27,6 @@ dev = [
 
 [tool.uv]
 package = false
-
-[tool.uv.sources]
-lifecore_ros2 = { path = "../lifecore_ros2", editable = true }
 
 [tool.ruff]
 line-length = 119
