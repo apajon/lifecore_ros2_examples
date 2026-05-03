@@ -58,24 +58,12 @@ wheels = [
 
 [[package]]
 name = "lifecore-ros2"
-source = { editable = "../lifecore_ros2" }
-
-[package.metadata]
-requires-dist = [
-    { name = "build", marker = "extra == 'dev'", specifier = ">=1.2.2" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.0" },
-    { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.408" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11.8" },
+version = "0.6.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9b/ed/0c557d94456c5c13448ba80d3d133cbd9850d91fae547b55d69e087cd0b6/lifecore_ros2-0.6.1.tar.gz", hash = "sha256:5e1795f4f87d650c7c1e715b9adf774a974648eaf9a8910f175378b27bda7588", size = 6739604, upload-time = "2026-05-02T19:25:27.726Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/e2/928b81e668ed57dd1a37012c4354ab8c6d5929aebb40702763c6c56fe602/lifecore_ros2-0.6.1-py3-none-any.whl", hash = "sha256:5429369bad43fd595f6d30faa800a341ce0e5ad7b3db3d8a1d364671c272e881", size = 42743, upload-time = "2026-05-02T19:25:26.082Z" },
 ]
-provides-extras = ["dev"]
-
-[package.metadata.requires-dev]
-docs = [
-    { name = "furo", specifier = ">=2024.8.6" },
-    { name = "sphinx", specifier = ">=8.0" },
-]
-release = [{ name = "python-semantic-release", specifier = ">=10,<10.3.0" }]
 
 [[package]]
 name = "lifecore-ros2-examples"
@@ -94,7 +82,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "lifecore-ros2", editable = "../lifecore_ros2" }]
+requires-dist = [{ name = "lifecore-ros2", specifier = ">=0.6.1,<1.0.0" }]
 
 [package.metadata.requires-dev]
 dev = [
