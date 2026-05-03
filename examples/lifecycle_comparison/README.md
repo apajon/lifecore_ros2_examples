@@ -10,6 +10,18 @@ The node receives sensor values on `/sensor/value` with `std_msgs/msg/Float64`,
 publishes watchdog status on `/sensor/status` with `std_msgs/msg/String`, and
 checks periodically whether the last sample is fresh.
 
+Keep one observation terminal open while you run any watchdog variant:
+
+```bash
+ros2 topic echo /sensor/status
+```
+
+If you also want to watch the shared stimulus, open another terminal with:
+
+```bash
+ros2 topic echo /sensor/value
+```
+
 ## Sensor Publisher
 
 Run the shared plain ROS 2 sensor publisher in one terminal:
@@ -47,12 +59,14 @@ ros2 topic pub --once /sensor/value std_msgs/msg/Float64 "{data: 42.0}"
 You can use this one-shot command instead of the shared sensor publisher when
 you want to force a single sample manually.
 
-Expected behavior:
+Expected topic and log signals:
 
 - the node starts receiving, checking, and publishing immediately;
+- the startup log says `Plain sensor watchdog started immediately.`;
 - status starts as `WAITING_FOR_FIRST_SAMPLE`;
 - after a sample, status becomes `OK value=<value>`;
-- after the stale timeout, status becomes `STALE age=<seconds>s`.
+- after the stale timeout, status becomes `STALE age=<seconds>s`;
+- each status transition is also logged as `Watchdog status: ...`.
 
 This demonstrates the strength and limit of a plain ROS 2 node: it is very
 simple and perfect for a prototype, but the subscriber, timer, and publisher are
@@ -76,14 +90,15 @@ ros2 lifecycle set /sensor_watchdog_classic deactivate
 ros2 lifecycle set /sensor_watchdog_classic cleanup
 ```
 
-Expected behavior:
+Expected topic and log signals:
 
-- configure creates the subscriber, lifecycle publisher, and timer;
+- `configure` logs `Classic lifecycle watchdog configured ...` and creates the subscriber, lifecycle publisher, and timer;
+- before `activate`, `/sensor/status` stays silent even if samples arrive;
 - the lifecycle publisher uses native lifecycle enable/disable behavior;
 - while inactive, the watchdog timer is canceled and sensor samples are ignored;
-- activate enables sensor handling, watchdog checks, and status publication;
-- deactivate cancels the timer and gates behavior again while keeping resources configured;
-- cleanup releases the subscriber, publisher, and timer.
+- `activate` logs `Classic lifecycle watchdog activated.` and allows `WAITING_FOR_FIRST_SAMPLE`, `OK value=<value>`, then `STALE age=<seconds>s` on `/sensor/status` and in `Watchdog status: ...` logs;
+- `deactivate` logs `Classic lifecycle watchdog deactivated.` and gates behavior again while keeping resources configured, so `/sensor/status` stops changing while inactive;
+- `cleanup` releases the subscriber, publisher, and timer and logs `Classic lifecycle watchdog cleaned up.`.
 
 This demonstrates both sides of classic ROS 2 lifecycle plumbing: lifecycle
 publishers are native, but subscriptions and timers are not automatically made
@@ -107,13 +122,16 @@ ros2 lifecycle set /sensor_watchdog_lifecore deactivate
 ros2 lifecycle set /sensor_watchdog_lifecore cleanup
 ```
 
-Expected behavior:
+Expected topic and log signals:
 
 - the node describes the architecture by wiring explicit component dependencies;
 - `SensorStateComponent` owns the latest-sample state and lifecycle reset;
 - `SensorSubscriberComponent` owns the `/sensor/value` subscription and updates the state;
 - `WatchdogStatusPublisher` owns status publication;
 - `WatchdogTimer` owns periodic freshness checks;
+- before `activate`, `/sensor/status` stays silent and subscriber/timer work is gated while inactive;
 - Lifecore gates subscriber callbacks, timer ticks, and publisher calls through component activation;
-- the watchdog timer starts on activate and stops on deactivate through its component lifecycle hooks;
+- `activate` logs `[watchdog_timer] watchdog timer started`, then allows `WAITING_FOR_FIRST_SAMPLE`, `OK value=<value>`, and `STALE age=<seconds>s` on `/sensor/status` and in `Watchdog status: ...` logs;
+- `deactivate` logs `[watchdog_timer] watchdog timer stopped` and gates new status publication while resources remain configured;
+- `cleanup` resets component state and releases the subscriber, publisher, and timer resources;
 - the application node does not carry lifecycle flags or resource cleanup plumbing.

@@ -6,4 +6,4 @@ Each example should be executable as a standalone scenario and should document i
 
 ## Available Examples
 
-- [`lifecycle_comparison/`](lifecycle_comparison/) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario.
+- [`lifecycle_comparison/README.md`](lifecycle_comparison/README.md) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario. Use that README for the shared sensor publisher command, lifecycle transition commands, and expected `/sensor/status` and log signals.

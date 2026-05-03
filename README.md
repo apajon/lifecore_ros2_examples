@@ -59,7 +59,7 @@ tests/          Smoke tests for examples and repository structure
 
 ## Available Examples
 
-- [`examples/lifecycle_comparison/`](examples/lifecycle_comparison/) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario.
+- [`examples/lifecycle_comparison/README.md`](examples/lifecycle_comparison/README.md) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario. It includes the shared sensor publisher command, the commands to run each variant, and the expected `/sensor/status` and log signals.
 
 ## Planned Examples
 
