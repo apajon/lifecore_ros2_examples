@@ -17,6 +17,7 @@ Drive it::
 from __future__ import annotations
 
 import time
+from typing import cast
 
 import rclpy
 from rclpy.executors import SingleThreadedExecutor
@@ -50,7 +51,7 @@ class SensorWatchdogLifecycleNode(LifecycleNode):
         self._stale_timeout_sec = self.get_parameter("stale_timeout_sec").get_parameter_value().double_value
         watchdog_period_sec = self.get_parameter("watchdog_period_sec").get_parameter_value().double_value
 
-        self._status_pub = self.create_lifecycle_publisher(String, "/sensor/status", 10)
+        self._status_pub = cast(LifecyclePublisher, self.create_lifecycle_publisher(String, "/sensor/status", 10))
         self._sensor_sub = self.create_subscription(Float64, "/sensor/value", self._on_sensor_value, 10)
         self._watchdog_timer = self.create_timer(watchdog_period_sec, self._on_watchdog_tick)
         self._watchdog_timer.cancel()
