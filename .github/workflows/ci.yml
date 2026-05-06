@@ -1,0 +1,73 @@
+name: CI
+
+# Runs on pull requests targeting main and on manual dispatch only.
+# Does NOT run on every direct push to main to keep minutes consumption low.
+"on":
+    pull_request:
+        branches: [ main ]
+    workflow_dispatch: {}
+
+permissions:
+    contents: read
+
+# Cancel in-flight runs for the same PR branch when new commits arrive.
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    # ------------------------------------------------------------------
+    # Lint — no ROS required; fails fast and cheaply.
+    # ------------------------------------------------------------------
+    lint:
+        runs-on: ubuntu-24.04
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+
+            - name: Set up uv
+              uses: astral-sh/setup-uv@v8.1.0
+
+            - name: Sync dev dependencies
+              run: uv sync --group dev
+
+            - name: Ruff lint
+              run: uv run ruff check .
+
+            - name: Ruff format check
+              run: uv run ruff format --check .
+
+    # ------------------------------------------------------------------
+    # Validate — ROS 2 Jazzy required for both pyright and pytest.
+    # Uses the official ros:jazzy Docker image to skip apt installation
+    # and reuse the Docker layer cache on GitHub-hosted runners.
+    # ------------------------------------------------------------------
+    validate:
+        runs-on: ubuntu-24.04
+        container: ros:jazzy
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+
+            - name: Mark workspace as safe for git
+              run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+            - name: Set up uv
+              uses: astral-sh/setup-uv@v8.1.0
+
+            - name: Sync dev dependencies
+              run: uv sync --group dev
+
+            - name: Pyright type check
+              shell: bash
+              run: |
+                  source /opt/ros/jazzy/setup.bash
+                  uv run pyright
+
+            - name: Pytest
+              shell: bash
+              run: |
+                  source /opt/ros/jazzy/setup.bash
+                  uv run pytest
