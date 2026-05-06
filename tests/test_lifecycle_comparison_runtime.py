@@ -40,9 +40,9 @@ from examples.lifecycle_comparison.sensor_value_publisher_node import SensorValu
 
 
 @pytest.fixture(scope="module", autouse=True)
-def _rclpy_context() -> Generator[None, None, None]:
+def _rclpy_context() -> Generator[None, None, None]:  # pyright: ignore[reportUnusedFunction]
     """Initialize rclpy once for this module; skip shutdown if already initialized."""
-    already_ok = rclpy.ok()
+    already_ok = rclpy.ok()  # pyright: ignore[reportPrivateImportUsage]
     if not already_ok:
         rclpy.init()
     yield
@@ -262,9 +262,9 @@ def test_lifecore_gates_subscriber_timer_publication_and_cleans_up() -> None:
         # Publish a sample and spin until SensorStateComponent records it
         sensor_msg.data = 42.0
         sensor_pub.publish(sensor_msg)
-        assert _spin_until(
-            lambda: sensor_state.last_value == 42.0, executor
-        ), "SensorStateComponent did not receive sample after activate"
+        assert _spin_until(lambda: sensor_state.last_value == 42.0, executor), (
+            "SensorStateComponent did not receive sample after activate"
+        )
 
         # Tick and verify OK status published to the probe
         cast(Any, watchdog_timer)._on_timer_wrapper()

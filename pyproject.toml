@@ -19,6 +19,7 @@ Core = "https://github.com/apajon/lifecore_ros2"
 
 [dependency-groups]
 dev = [
+  "numpy>=2.4.4",
   "pre-commit>=4.0",
   "pyright>=1.1.408",
   "pytest>=8.0",
