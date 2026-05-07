@@ -1,16 +1,57 @@
 # lifecore_ros2_examples
 
-Applied, scenario-driven examples for [`lifecore_ros2`](https://github.com/apajon/lifecore_ros2).
+Scenario-driven ROS 2 examples for comparing raw `rclpy`, native lifecycle nodes, and [`lifecore_ros2`](https://github.com/apajon/lifecore_ros2) component-oriented lifecycle composition.
 
-This repository is a companion examples repository, not a reusable Python API. It hosts examples that are too domain-flavored, multi-node, or scenario-oriented for the core repository's small `examples/` directory.
+If you have ever duplicated activation flags, timer guards, callback guards, and cleanup code inside a ROS 2 lifecycle node, this repository shows the problem and one component-oriented way to structure it.
+
+This is a companion examples repository, not a reusable Python API. It hosts applied examples that are too domain-flavored, multi-node, or scenario-oriented for the core repository's small `examples/` directory.
+
+## What this repository is for
+
+Use this repository when you want to compare lifecycle-aware ROS 2 composition styles on the same runnable scenario, rather than reading minimal API walkthroughs.
+
+## What this repository is not
+
+- not a second reusable library
+- not the main documentation entry point for `lifecore_ros2`
+- not a stable API surface for scenario internals
+
+`lifecore_ros2` does not replace the native ROS 2 lifecycle state machine. It keeps the node lifecycle native and adds a small component ownership layer inside the node.
+
+## Quick Run
+
+Clone the repository, sync the environment, and run the `lifecore_ros2` variant of the comparison:
+
+```bash
+git clone https://github.com/apajon/lifecore_ros2_examples.git
+cd lifecore_ros2_examples
+source /opt/ros/jazzy/setup.bash
+uv sync --dev
+
+# Terminal 1
+source /opt/ros/jazzy/setup.bash
+uv run python examples/lifecycle_comparison/sensor_value_publisher_node.py
+
+# Terminal 2
+source /opt/ros/jazzy/setup.bash
+uv run python examples/lifecycle_comparison/lifecore_ros2/sensor_watchdog_lifecore_node.py
+
+# Terminal 3
+source /opt/ros/jazzy/setup.bash
+ros2 lifecycle set /sensor_watchdog_lifecore configure
+ros2 lifecycle set /sensor_watchdog_lifecore activate
+ros2 topic echo /sensor/status
+```
+
+Then open [`examples/lifecycle_comparison/README.md`](examples/lifecycle_comparison/README.md) to run the plain ROS 2 and classic lifecycle variants side by side.
 
 ## Scope
 
-Examples belong here when they use applied ROS 2 patterns such as sensor pipelines, diagnostics aggregation, supervision, or multi-node orchestration. The core `lifecore_ros2/examples/` directory remains the place for minimal examples that teach one framework abstraction at a time.
+Examples belong here when they use applied ROS 2 patterns such as sensor pipelines, diagnostics aggregation, supervision, or multi-node orchestration. The core `lifecore_ros2/examples/` directory remains the place for minimal examples that teach one library abstraction at a time.
 
-This repository intentionally does not promise backward compatibility for example internals. Treat the examples as followable scaffolding, not a library surface.
+This repository intentionally does not promise backward compatibility for example internals. Treat the examples as runnable learning material, not as a stable import surface.
 
-Some future examples may take conceptual inspiration from MIT's [Underactuated Robotics](https://underactuated.mit.edu/) materials when choosing robotics dynamics, estimation, control, or systems scenarios. That source is used as design inspiration only; this repository does not vendor, mirror, or reproduce its content.
+Future examples may use robotics dynamics, estimation, control, or systems scenarios inspired by MIT's [Underactuated Robotics](https://underactuated.mit.edu/) materials, without vendoring or reproducing their content.
 
 ## Requirements
 
@@ -48,7 +89,7 @@ uv run pyright
 uv run pytest
 ```
 
-The GitHub Actions quality workflow is manual-only (`workflow_dispatch`). It does not run on every push, which keeps validation under deliberate control while the repository is being bootstrapped through small commits.
+CI runs on pull requests to `main` and can also be triggered manually. The separate `quality.yml` workflow remains manual-only for deliberate ad-hoc validation.
 
 ## Repository Layout
 

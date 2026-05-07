@@ -6,6 +6,14 @@ This example compares the same `sensor_watchdog` node in three styles:
 - classic ROS 2 lifecycle
 - `lifecore_ros2` component-oriented lifecycle
 
+The goal is not to show three ways to write the same node for style points. The goal is to expose where lifecycle behavior lives:
+
+- in the whole node, with plain ROS 2;
+- partly in ROS 2 lifecycle primitives and partly in manual guards, with classic lifecycle nodes;
+- in explicit lifecycle-aware components, with `lifecore_ros2`.
+
+`lifecore_ros2` does not replace the native ROS 2 lifecycle state machine. It keeps the node lifecycle native and adds a small component ownership layer inside the node.
+
 The node receives sensor values on `/sensor/value` with `std_msgs/msg/Float64`,
 publishes watchdog status on `/sensor/status` with `std_msgs/msg/String`, and
 checks periodically whether the last sample is fresh.
@@ -135,3 +143,11 @@ Expected topic and log signals:
 - `deactivate` logs `[watchdog_timer] watchdog timer stopped` and gates new status publication while resources remain configured;
 - `cleanup` resets component state and releases the subscriber, publisher, and timer resources;
 - the application node does not carry lifecycle flags or resource cleanup plumbing.
+
+## Comparison Summary
+
+| Variant | Best for | Lifecycle behavior | Main trade-off |
+| --- | --- | --- | --- |
+| Plain ROS 2 | prototypes | starts immediately | no configure/activate/deactivate control |
+| Classic ROS 2 lifecycle | native managed nodes | lifecycle publisher is native | subscriptions, timers, and callback gating remain manual |
+| lifecore_ros2 | component-oriented applications | subscriber, timer, and publisher behavior are lifecycle-gated through components | introduces a small composition layer |
