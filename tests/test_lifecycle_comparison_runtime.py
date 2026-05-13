@@ -169,7 +169,7 @@ def test_plain_watchdog_publishes_waiting_ok_and_stale_statuses() -> None:
 
 
 def test_classic_lifecycle_gates_runtime_behavior_and_releases_resources() -> None:
-    """Classic lifecycle node gates sensor and tick callbacks until activated; releases resources on cleanup."""
+    """Classic lifecycle treats inactive runtime misuse as gated no-op behavior."""
     node = SensorWatchdogLifecycleNode()
     probe = _StatusProbe()
     executor = SingleThreadedExecutor()
@@ -208,6 +208,7 @@ def test_classic_lifecycle_gates_runtime_behavior_and_releases_resources() -> No
         cast(Any, node)._on_watchdog_tick()
         _spin_for(executor, 20)
         assert len(probe.received) == before_count
+        assert cast(Any, node)._last_value is None
 
         # Cleanup: ROS resources released, watchdog state reset
         result = node.trigger_cleanup()
@@ -225,7 +226,7 @@ def test_classic_lifecycle_gates_runtime_behavior_and_releases_resources() -> No
 
 
 def test_lifecore_gates_subscriber_timer_publication_and_cleans_up() -> None:
-    """lifecore_ros2 node gates subscriber, timer, and status publication while inactive; cleans up on cleanup."""
+    """lifecore_ros2 treats inactive runtime misuse as gated no-op behavior."""
     node = LifecoreWatchdogNode()
     probe = _StatusProbe()
     sensor_pub_node: Node = Node(f"sensor_pub_{uuid.uuid4().hex}")
