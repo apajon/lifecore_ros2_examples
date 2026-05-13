@@ -4,7 +4,10 @@ Single idea: the node describes the architecture and each component owns one
 responsibility. Component dependencies are explicit in the node wiring, and
 Lifecore propagates lifecycle transitions to the components so subscriber
 callbacks, timer ticks, and status publication are gated without an activation
-flag in the application node.
+flag in the application node. The application-facing hooks remain explicit:
+``on_message`` is the subscriber contract, ``on_tick`` is the timer contract,
+and the publisher component exposes a narrow ``publish_status()`` method for
+domain intent.
 
 Drive it::
 
@@ -83,6 +86,11 @@ class SensorSubscriberComponent(LifecycleSubscriberComponent[Float64]):
         self._sensor_state = sensor_state
 
     def on_message(self, msg: Float64) -> None:
+        """Handle one sensor sample while the component is active.
+
+        This is the public subscriber callback contract. Messages arriving
+        while inactive are gated by the framework and never reach this hook.
+        """
         self._sensor_state.update(msg.data)
 
 
@@ -98,6 +106,7 @@ class WatchdogStatusPublisher(LifecyclePublisherComponent[String]):
         )
 
     def publish_status(self, status_text: str) -> None:
+        """Publish one domain status update through the lifecycle-gated publisher."""
         status = String()
         status.data = status_text
         self.publish(status)
@@ -143,6 +152,12 @@ class WatchdogTimer(LifecycleTimerComponent):
         return TransitionCallbackReturn.SUCCESS
 
     def on_tick(self) -> None:
+        """Handle one watchdog tick while the component is active.
+
+        This is the public timer hook. The framework is responsible for timer
+        lifecycle gating; this method only evaluates freshness and emits the
+        resulting status.
+        """
         status_text, status_kind = self._build_status()
         self._status_publisher.publish_status(status_text)
 

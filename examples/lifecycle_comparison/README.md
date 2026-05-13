@@ -134,9 +134,9 @@ Expected topic and log signals:
 
 - the node describes the architecture by wiring explicit component dependencies;
 - `SensorStateComponent` owns the latest-sample state and lifecycle reset;
-- `SensorSubscriberComponent` owns the `/sensor/value` subscription and updates the state;
+- `SensorSubscriberComponent` owns the `/sensor/value` subscription; `on_message` is the public application callback and is called only while active;
 - `WatchdogStatusPublisher` owns status publication;
-- `WatchdogTimer` owns periodic freshness checks;
+- `WatchdogTimer` owns periodic freshness checks; `on_tick` is the public timer hook and runs only while active;
 - before `activate`, `/sensor/status` stays silent and subscriber/timer work is gated while inactive;
 - Lifecore gates subscriber callbacks, timer ticks, and publisher calls through component activation;
 - `activate` logs `[watchdog_timer] watchdog timer started`, then allows `WAITING_FOR_FIRST_SAMPLE`, `OK value=<value>`, and `STALE age=<seconds>s` on `/sensor/status` and in `Watchdog status: ...` logs;

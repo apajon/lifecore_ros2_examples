@@ -2,7 +2,7 @@
 
 Scenario-driven ROS 2 examples for comparing raw `rclpy`, native lifecycle nodes, and [`lifecore_ros2`](https://github.com/apajon/lifecore_ros2) component-oriented lifecycle composition.
 
-If you have ever duplicated activation flags, timer guards, callback guards, and cleanup code inside a ROS 2 lifecycle node, this repository shows the problem and one component-oriented way to structure it.
+If you have ever duplicated activation flags, timer guards, callback guards, and cleanup code inside a ROS 2 lifecycle node, this repository shows the problem and one component-oriented way to structure it. In the `lifecore_ros2` variants, application hooks such as `on_message` and `on_tick` stay explicit while the framework keeps lifecycle gating and resource ownership.
 
 This is a companion examples repository, not a reusable Python API. It hosts applied examples that are too domain-flavored, multi-node, or scenario-oriented for the core repository's small `examples/` directory.
 
@@ -100,7 +100,7 @@ tests/          Smoke tests for examples and repository structure
 
 ## Available Examples
 
-- [`examples/lifecycle_comparison/README.md`](examples/lifecycle_comparison/README.md) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario. It includes the shared sensor publisher command, the commands to run each variant, and the expected `/sensor/status` and log signals.
+- [`examples/lifecycle_comparison/README.md`](examples/lifecycle_comparison/README.md) compares plain ROS 2, classic ROS 2 lifecycle, and `lifecore_ros2` in the same sensor watchdog scenario. It includes the shared sensor publisher command, the commands to run each variant, the expected `/sensor/status` and log signals, and the split between public component hooks and framework-managed lifecycle gating.
 
 ## Planned Examples
 
