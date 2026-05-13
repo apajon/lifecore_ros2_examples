@@ -14,6 +14,8 @@ The goal is not to show three ways to write the same node for style points. The 
 
 `lifecore_ros2` does not replace the native ROS 2 lifecycle state machine. It keeps the node lifecycle native and adds a small component ownership layer inside the node.
 
+The comparison intentionally treats inactive runtime misuse as lifecycle gating behavior. If a configured node has not been activated yet, or if it has been deactivated, incoming sensor samples must not update watchdog state, timer-driven status publication must not happen, and the node must keep running. This is not a new exception policy; it is the expected safe behavior of lifecycle-aware callbacks and publishers.
+
 The node receives sensor values on `/sensor/value` with `std_msgs/msg/Float64`,
 publishes watchdog status on `/sensor/status` with `std_msgs/msg/String`, and
 checks periodically whether the last sample is fresh.
@@ -108,6 +110,12 @@ Expected topic and log signals:
 - `deactivate` logs `Classic lifecycle watchdog deactivated.` and gates behavior again while keeping resources configured, so `/sensor/status` stops changing while inactive;
 - `cleanup` releases the subscriber, publisher, and timer and logs `Classic lifecycle watchdog cleaned up.`.
 
+Inactive misuse expectation:
+
+- publishing `/sensor/value` before `activate` or after `deactivate` must not update the internal latest-sample state;
+- forcing the watchdog tick while inactive must not publish `/sensor/status`;
+- those no-op paths must not crash the node.
+
 This demonstrates both sides of classic ROS 2 lifecycle plumbing: lifecycle
 publishers are native, but subscriptions and timers are not automatically made
 lifecycle-aware, so the node still needs manual activation flags and guarded
@@ -143,6 +151,12 @@ Expected topic and log signals:
 - `deactivate` logs `[watchdog_timer] watchdog timer stopped` and gates new status publication while resources remain configured;
 - `cleanup` resets component state and releases the subscriber, publisher, and timer resources;
 - the application node does not carry lifecycle flags or resource cleanup plumbing.
+
+Inactive misuse expectation:
+
+- publishing `/sensor/value` before `activate` or after `deactivate` is dropped by the subscriber component gate;
+- forcing the watchdog timer wrapper while inactive is a no-op;
+- those no-op paths must not crash the node.
 
 ## Comparison Summary
 

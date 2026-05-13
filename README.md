@@ -4,6 +4,8 @@ Scenario-driven ROS 2 examples for comparing raw `rclpy`, native lifecycle nodes
 
 If you have ever duplicated activation flags, timer guards, callback guards, and cleanup code inside a ROS 2 lifecycle node, this repository shows the problem and one component-oriented way to structure it. In the `lifecore_ros2` variants, application hooks such as `on_message` and `on_tick` stay explicit while the framework keeps lifecycle gating and resource ownership.
 
+The main comparison focuses on inactive runtime misuse: when a lifecycle node is configured but not active, or has been deactivated, incoming samples should not update watchdog state, timer-driven status publication should not happen, and the node should keep running without treating the misuse as a new exception policy.
+
 This is a companion examples repository, not a reusable Python API. It hosts applied examples that are too domain-flavored, multi-node, or scenario-oriented for the core repository's small `examples/` directory.
 
 ## What this repository is for
